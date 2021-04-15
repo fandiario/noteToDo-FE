@@ -6,6 +6,8 @@ import Dashboard from "./Pages/Dashboard"
 import Login from "./Pages/Login"
 import ConfirmationLink from "./Pages/EmailConfirmationLink"
 import ConfirmationCode from "./Pages/EmailConfirmationCode"
+import ConfirmRegistration from "./Pages/ConfirmRegistration"
+import ForgotPassword from "./Pages/ForgotPassword"
 
 // Redux
 import {applyMiddleware, createStore} from "redux"
@@ -26,7 +28,9 @@ const App = () => {
           <Route exact path = "/" component={Login}></Route>
           <Route path = "/confirmation/code/:idUser/:passwordUser" component={ConfirmationCode}></Route>
           <Route path = "/confirmation/link/:idUser/:passwordUser" component={ConfirmationLink}></Route>
-          <Route path="/dashboard/:idUser" component={Dashboard}></Route>
+          <Route path = "/dashboard" component={Dashboard}></Route>
+          <Route path = "/confirm-registration" component={ConfirmRegistration}></Route>
+          <Route path = "/forgot-password" component={ForgotPassword}></Route>
         </Switch>
       </Router>
     </Provider>

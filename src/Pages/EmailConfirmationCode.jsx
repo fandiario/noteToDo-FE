@@ -10,7 +10,7 @@ import insertCodePict from "../Supports/Assets/undraw_Process_re_gws7.svg"
 const ConfirmCode = (route) => {
     useEffect (() => {
         // onConfirmation ()
-    })
+    },[])
 
     const [dataState, setDataState] = useState ({
         error: false,
@@ -19,10 +19,11 @@ const ConfirmCode = (route) => {
 
     const activationCode = useRef (null)
 
-    const onConfirmation = () => {
+    const onConfirmationCode = () => {
         let dataToSend = {
             id: route.match.params.idUser,
-            password: route.match.params.passwordUser
+            password: route.match.params.passwordUser,
+            confirmationCode: activationCode.current.value
         }
 
         axios.patch (linkAPI + `/confirmation`, {dataToSend})
@@ -59,7 +60,8 @@ const ConfirmCode = (route) => {
                     <p className="my-3">
                         Click the button below to confirm
                     </p>
-                    <button className="btn todo-btn-dark shadow">Confirm</button>
+                    <input type="button" className="btn todo-btn-dark shadow" value="Confirm" onClick={onConfirmationCode}/>
+                    {/* <button className="btn todo-btn-dark shadow">Confirm</button> */}
                     {/* <a class="btn todo-btn-dark shadow" href="http://localhost:3000/dashboard/:idUser" role="button">Coninue Log In</a> */}
                 </div>
             </div>

@@ -52,7 +52,7 @@ export const onUserLogin = (dataInput) => {
             // })
 
             if (res.data.error === false) {
-                localStorage.setItem ("my-token", res.data.data.token)
+                localStorage.setItem ("token", res.data.data.token)
                 dispatch ({
                     type: "LOGIN_SUCCESS",
                     payload: res.data.data.token   
@@ -84,6 +84,78 @@ export const onUserLogin = (dataInput) => {
     }
 }
 
+export const onForgotPassword = (inputEmail) => {
+    return (dispatch) => {
+        
+        dispatch ({
+            type: "LOADING"
+        })
+
+        axios.patch (linkAPI + "/forgot-password", {inputEmail})
+
+        .then ((res) => {
+            console.log (res)
+            if (res.data.error === false) {
+                dispatch ({
+                    type: "NEW_PASS_SUCCESS",
+                    payload: res.data.message
+                })
+
+            } else if (res.data.error === true) {
+                dispatch ({
+                    type: "NEW_PASS_FAIL",
+                    payload: res.data.message
+                })
+            }
+        })
+
+        .catch ((err) => {
+            console.log (`${err.message}`)
+            dispatch ({
+                type: "NEW_PASS_FAIL",
+                payload: err.message
+            })
+        })
+    }
+
+    
+}
+
 export const onConfirmAccount = () => {
     
 }
+
+export const getDataUser = (inputToken) => {
+    return (dispatch) => {
+        // console.log (inputToken)
+
+        axios.post (linkAPI + "/get-data-user", {inputToken})
+
+        .then ((res)=> {
+            // console.log (res)
+            if (res.data.error === false) {
+                dispatch ({
+                    type: "GET_DATA_USER_SUCCESS",
+                    payload: res.data.dataUser
+                })
+
+            } else if (res.data.error === true) {
+                dispatch ({
+                    type: "GET_DATA_USER_FAIL",
+                    payload: res.data.message
+                })
+            }
+        })
+
+        .catch ((err) => {
+            console.log (err)
+            dispatch ({
+                type: "GET_DATA_USER_FAIL",
+                payload: err.message
+            }) 
+        })
+
+    }
+}
+
+

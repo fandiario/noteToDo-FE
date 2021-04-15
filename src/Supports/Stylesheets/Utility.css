@@ -5,7 +5,11 @@
     --light: #ecf0f1;
     --success: #6ab04c;
     --danger: #EA2027;
-    --disabled: #01a3a4
+    --disabled: #01a3a4;
+}
+
+body {
+    overflow-x:hidden;
 }
 
 /* BG-Colour */
@@ -92,4 +96,8 @@
 /* Font Style */
 .todo-fs-italic {
     font-style: italic;
+}
+
+.todo-fs-bold {
+    font-weight: bold;
 }

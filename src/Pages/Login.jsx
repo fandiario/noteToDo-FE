@@ -1,4 +1,7 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
+
+// Link
+import {Redirect} from "react-router-dom"
 
 // Modals
 import { Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
@@ -17,17 +20,35 @@ import frontPict from "../Supports/Assets/undraw_Build_wireframe_re_ln7g.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faGoogle, faFacebook} from"@fortawesome/free-brands-svg-icons"
 
-const Login = ({onUserRegister, onUserLogin, user}) => {
+// swal
+import swal from "sweetalert"
 
+// Image
+import congratsPict from "../Supports/Assets/undraw_well_done_i2wr.svg"
+import errorPict from "../Supports/Assets/undraw_cancel_u1it.svg"
+
+const Login = ({onUserRegister, onUserLogin, user}) => {
     const [showModal, setShowModal] = useState (false)
     const [dataState, setDataState] = useState ({
         error: null,
-        loading: false
+        loading: false,
+        registered: false
     })
+
     const emailLogin = useRef (null)
     const passwordLogin = useRef (null)
     const emailRegister = useRef (null)
     const passwordRegister = useRef (null)
+
+    useEffect (() => {
+        // if (user.isRegister === true){
+        //     showSuccessRegister()
+        // }
+
+        if (user.isLogin === true){
+            showSuccessLogin()
+        }
+    })
 
     const onSubmitRegister = () => {
         let regEmail = emailRegister.current.value
@@ -44,6 +65,9 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
         if (regPass.length < 6 ) throw setDataState ({error:"Password's min. length is 6 characters", loading: false})
 
         onUserRegister (dataToSend)
+        setDataState ({registered: true})
+        // setShowModal (false)
+        // window.location = "/confirm-registration"
 
     }
 
@@ -59,15 +83,35 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
         if (!loginEmail || !loginPass) throw setDataState ({error: "Empty Data Field Detected", loading: false})
 
         onUserLogin (dataToSend)
-        // console.log (user)
     }
 
-    
+    // const showSuccessRegister = () => {
+    //     swal({
+    //         title: "Success",
+    //         text: "Registration user is success. Please check email in 1 x 24 hours",
+    //         icon: "success",
+    //         timer: 3000
+    //     })
+    // }
+
+    const showSuccessLogin = () => {
+        swal({
+            title: "Success",
+            text: "Log In success",
+            icon: "success",
+            timer: 3000
+        })
+    }
+
+    if (user.isRedirect === true) {
+        return (
+            <Redirect to = "/dashboard"></Redirect>
+        )
+    }
 
     return (
         <div className="container">
             <div className="col-12 my-3">
-                
                 <h1 className="todo-bg-primary todo-border-dark todo-border-rad5 p-1 shadow" style={{width: "225px"}}>
                     Get It Done
                 </h1>
@@ -76,6 +120,7 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
                     Your personal task and project manager
                 </h5>
             </div>
+
             
             <div className="row">
                 <div className="col-5 my-3 ml-3 d-flex justify-content-center align-self-center">
@@ -100,9 +145,19 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
                             {/* <input type="password" className="form-control" /> */}
                             <input type="password" className="form-control"  ref={passwordLogin}/>
                         </div>
-
-                        <button className="btn todo-btn-dark shadow" onClick={onSubmitLogin} disabled={dataState.loading}>Log In</button>
                     </form>
+                    <div className="row d-flex justify-content-between mx-1">
+                        <div>
+                            <input type="button" value="Log In" className="btn todo-btn-dark shadow" onClick={() => onSubmitLogin()} disabled={dataState.loading}/>
+                            {/* <button className="btn todo-btn-dark shadow" onClick={() => onSubmitLogin()} disabled={dataState.loading}>Log In</button> */}
+                        </div>
+                        <div>
+                            {/* <Link to></Link> */}
+                            <a href="/forgot-password" className="todo-colour-dark">Forgot Password ?</a>
+                            {/* <a href={`/forgot-password/${dataUser.inputEmailLogin}`} className="todo-colour-dark">Forgot Password ?</a> */}
+                        </div>
+                        
+                    </div>
 
                     {
                         user.message ?
@@ -154,6 +209,8 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
                     
                 </div>
             </div>
+            
+            
 
             {/* Modal */}
             <Modal toggle={() => setShowModal(false)} isOpen={showModal} className="todo-border-dark todo-border-rad5 shadow">
@@ -172,7 +229,8 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
                             <input type="password" className="form-control" ref={passwordRegister} />
                         </div>
 
-                        <button className="btn todo-btn-dark shadow" onClick={onSubmitRegister} disabled={dataState.loading}>Register</button>
+                        <input type="button" value="Register" className="btn todo-btn-dark shadow" disabled={user.loading} onClick={onSubmitRegister}/>
+                        {/* <button type="button" className="btn todo-btn-dark shadow" onClick={onSubmitRegister} disabled={user.loading}>Register</button> */}
                     </form>
                 </ModalBody>
 
@@ -194,6 +252,15 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
                         :
                             null
 
+                    }
+
+                    {
+                        dataState.registered === true ?
+                            <div className="col-12 d-flex flex-column align-items-center my-1">
+                                "User registration is success. Please check your email in 1 x 24 hours"
+                            </div>
+                        :
+                            null
                     }
                 </ModalFooter>
 
