@@ -1,5 +1,6 @@
 import axios from 'axios'
 import linkAPITodo from "../../Supports/Constants/LinkAPITodo"
+// import swal from 'sweetalert'
 
 
 export const getDataTask = (data) => {
@@ -64,6 +65,67 @@ export const createTask = (dataToSend) => {
             console.log (err)
             dispatch ({
                 type: "TODO_FAIL",
+                payload: err.response.data.message
+            })
+        })
+    }
+}
+
+export const updateTaskDone = (id) => {
+    return (dispatch) => {
+        // console.log (id)
+        axios.patch (linkAPITodo + "/update-task-done", {id})
+
+        .then ((res) => {
+            if (res.data.error === false) {
+                dispatch ({
+                    type: "TODO_UPDATE_DONE",
+                    payload: res.data.message
+                })
+
+            } else if (res.data.error === true) {
+                dispatch ({
+                    type: "TODO_UPDATE_FAIL",
+                    payload: res.data.message
+                })
+            }
+        })
+
+        .catch ((err) => {
+            console.log (err)
+            dispatch ({
+                type: "TODO_UPDATE_FAIL",
+                payload: err.response.data.message
+            })
+        })
+
+    }
+}
+
+export const deleteTask = (id) => {
+    // console.log (id)
+    return (dispatch) => {
+        axios.post (linkAPITodo + "/delete-task", {id})
+
+        .then ((res) => {
+            if (res.data.error === false){
+                dispatch ({
+                    type: "TODO_DELETE_SUCCESS",
+                    payload: res.data.message
+                })
+
+            } else if (res.data.error === true){
+                dispatch ({
+                    type: "TODO_DELETE_FAIL",
+                    payload: res.data.message
+                })
+            }
+        })
+
+        .catch ((err) => {
+            console.log (err)
+            dispatch ({
+                type: "TODO_DELETE_FAIL",
                 payload: err.response.data.message
             })
         })

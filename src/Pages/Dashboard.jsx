@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 // Redux
 import {connect} from "react-redux"
 import {getDataUser} from "../Redux/Actions/UserActions"
-import {getDataTask} from "../Redux/Actions/TodoActions"
+import {getDataTask, updateTaskDone, deleteTask} from "../Redux/Actions/TodoActions"
 
 // Add New Task
 import CreateTaskModal from "../Components/CreateTaskModal"
@@ -19,7 +19,7 @@ import swal from "sweetalert"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const Dashboard = ({getDataUser, getDataTask, user, todo}) => {
+const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, todo}) => {
 
     useEffect (() => {
         onGetDataUser ()
@@ -67,9 +67,17 @@ const Dashboard = ({getDataUser, getDataTask, user, todo}) => {
           .catch ((err) => {
               console.log (err)
           })
-        
+    }
 
+    const onUpdateTaskDone = (id) => {
+        // console.log (id)
+        updateTaskDone (id)
+        onGetDataTask ()
+    }
 
+    const onDeleteTask = (id) => {
+        deleteTask(id)
+        onGetDataTask ()
     }
 
     if (user.dataUser === null || todo.data === null) {
@@ -151,7 +159,7 @@ const Dashboard = ({getDataUser, getDataTask, user, todo}) => {
                         <div className="my-3">
                             {
                                 todo.message ?
-                                    <div className="col-12 alert todo-bg-danger todo-colour-light todo-fs-bold todo-border-dark todo-border-rad5" role="alert">
+                                    <div className="col-12 alert todo-bg-primary todo-colour-dark todo-fs-bold todo-border-dark todo-border-rad5" role="alert">
                                         <div className="text-center">
                                             {todo.message}
                                         </div>
@@ -207,7 +215,7 @@ const Dashboard = ({getDataUser, getDataTask, user, todo}) => {
                                                                                 <button className="btn todo-btn-primary todo-border-dark todo-border-rad5 mr-2">
                                                                                     <FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>
                                                                                 </button>
-                                                                                <button className="btn todo-btn-dark todo-border-dark todo-border-rad5">
+                                                                                <button className="btn todo-btn-dark todo-border-dark todo-border-rad5" onClick={() => onDeleteTask(element.id)}>
                                                                                     <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
                                                                                 </button>
                                                                             </div>
@@ -223,10 +231,16 @@ const Dashboard = ({getDataUser, getDataTask, user, todo}) => {
                                                                             <div className="mb-2 ml-3 flex-wrap">
                                                                                 Description : {element.description}
                                                                             </div>
-                                                                            <button className="btn todo-btn-success todo-border-dark todo-border-rad5 mr-3 mb-3 todo-fs-bold">
-                                                                                <FontAwesomeIcon icon={faCheck} className="mx-1"></FontAwesomeIcon>
-                                                                                Done
-                                                                            </button>
+                                                                            {
+                                                                                element.status === 0 ?
+                                                                                    <button className="btn todo-btn-success todo-border-dark todo-border-rad5 mr-3 mb-3 todo-fs-bold" onClick={() => onUpdateTaskDone(element.id)}>
+                                                                                        <FontAwesomeIcon icon={faCheck} className="mx-1"></FontAwesomeIcon>
+                                                                                        Done
+                                                                                    </button>
+                                                                                :
+                                                                                    null
+                                                                            }
+                                                                            
                                                                         </div>
                                                                     </div>
                                                                 )
@@ -263,7 +277,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    getDataUser, getDataTask
+    getDataUser, getDataTask, updateTaskDone, deleteTask
 }
 
 export default connect (mapStateToProps, mapDispatchToProps) (Dashboard)

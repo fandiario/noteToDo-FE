@@ -1,7 +1,8 @@
 let initialstate = {
     loading: false,
     data: null,
-    message: null
+    message: null,
+    isDone: false,
 }
 
 const todoReducer = (state = initialstate, action) => {
@@ -14,6 +15,19 @@ const todoReducer = (state = initialstate, action) => {
         
         case "TODO_FAIL":
             return {...state, message: action.payload, loading: false}
+        
+        case "TODO_UPDATE_DONE":
+            return {...state, isDone: true, loading: false, message: action.payload}
+
+        case "TODO_UPDATE_FAIL":
+            return {...state, isDone: false, loading: false, message: action.payload}
+
+        case "TODO_DELETE_SUCCESS":
+            return {...state, loading: false, message: action.payload}
+
+        case "TODO_DELETE_FAIL":
+            return {...state, loading: false, message: action.payload}
+        
 
         default :
             return state
