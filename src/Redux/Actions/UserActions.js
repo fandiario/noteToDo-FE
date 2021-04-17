@@ -125,11 +125,11 @@ export const onConfirmAccount = () => {
     
 }
 
-export const getDataUser = (inputToken) => {
+export const getDataUser = (token) => {
     return (dispatch) => {
-        // console.log (inputToken)
+        // console.log (token)
 
-        axios.post (linkAPI + "/get-data-user", {inputToken})
+        axios.post (linkAPI + "/get-data-user", {token})
 
         .then ((res)=> {
             // console.log (res)

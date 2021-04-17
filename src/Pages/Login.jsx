@@ -97,7 +97,7 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
     const showSuccessLogin = () => {
         swal({
             title: "Success",
-            text: "Log In success",
+            text: "Successfully logged in.",
             icon: "success",
             timer: 3000
         })
@@ -265,6 +265,8 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
                 </ModalFooter>
 
             </Modal>
+
+        
         </div>
     )
 }

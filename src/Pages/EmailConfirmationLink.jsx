@@ -36,6 +36,10 @@ const ConfirmLink = (route) => {
         })
     }
 
+    const getLoginPage = () => {
+        window.location="/"
+    }
+
 
     return (
         <div className="container">
@@ -77,7 +81,7 @@ const ConfirmLink = (route) => {
                             <p>
                                 Click the button below to log in
                             </p>
-                            <button className="btn todo-btn-dark shadow">Continue Log In</button>
+                            <button type="button" className="btn todo-btn-dark shadow" onClick={getLoginPage}>Continue Log In</button>
                             {/* <a class="btn todo-btn-dark shadow" href="http://localhost:3000/dashboard/:idUser" role="button">Coninue Log In</a> */}
                         </div>
                     </div>
