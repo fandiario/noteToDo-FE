@@ -1,4 +1,4 @@
-import React, {useEffect} from "react"
+import React from "react"
 
 // Redux
 import { connect } from "react-redux"
@@ -8,9 +8,6 @@ import congratsPict from "../Supports/Assets/undraw_well_done_i2wr.svg"
 import errorPict from "../Supports/Assets/undraw_cancel_u1it.svg"
 
 const ConfirmRegistration = ({user}) => {
-    // useEffect (() => {
-    //     console.log (user)
-    // },[])
 
     return (
         <div className="container">

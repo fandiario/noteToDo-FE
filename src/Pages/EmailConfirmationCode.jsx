@@ -13,8 +13,9 @@ const ConfirmCode = (route) => {
     },[])
 
     const [dataState, setDataState] = useState ({
-        error: false,
-        message: null
+        error: null,
+        message: null,
+        isActive: false
     })
 
     const activationCode = useRef (null)
@@ -26,16 +27,20 @@ const ConfirmCode = (route) => {
             confirmationCode: activationCode.current.value
         }
 
-        axios.patch (linkAPI + `/confirmation`, {dataToSend})
+        axios.patch (linkAPI + `/confirmation-code`, {dataToSend})
 
         .then ((res) => {
-            setDataState ({error: res.data.error, message: res.data.message})
+            setDataState ({error: res.data.error, message: res.data.message, isActive: true})
         })
 
         .catch ((err) => {
             console.log (err)
             setDataState ({error: true, message: err.message})
         })
+    }
+
+    const getLoginPage = () => {
+        window.location="/"
     }
 
     return (
@@ -50,53 +55,68 @@ const ConfirmCode = (route) => {
                 </h5>
             </div>
 
-            <div className="col-12 d-flex justify-content-center mb-3">
-                <div className="col-6 text-center todo-bg-primary todo-border-dark todo-border-rad5 shadow py-3">
-                    <h1>
-                        Code Activation
-                    </h1>
-                    <img src={insertCodePict} className="my-3" style={{width:"auto", height:"210px"}} alt="congratsPict"></img>
-                    <input type="text" className="form-control" placeholder="Enter your activation code" ref={activationCode}/>
-                    <p className="my-3">
-                        Click the button below to confirm
-                    </p>
-                    <input type="button" className="btn todo-btn-dark shadow" value="Confirm" onClick={onConfirmationCode}/>
-                    {/* <button className="btn todo-btn-dark shadow">Confirm</button> */}
-                    {/* <a class="btn todo-btn-dark shadow" href="http://localhost:3000/dashboard/:idUser" role="button">Coninue Log In</a> */}
-                </div>
-            </div>
+            {
+                dataState.isActive === false ?
+                    <div className="col-12 d-flex justify-content-center mb-3">
+                        <div className="col-6 text-center todo-bg-primary todo-border-dark todo-border-rad5 shadow py-3">
+                            <h1>
+                                Code Activation
+                            </h1>
+                            <img src={insertCodePict} className="my-3" style={{width:"auto", height:"210px"}} alt="congratsPict"></img>
+                            <input type="text" className="form-control" placeholder="Enter your activation code" ref={activationCode}/>
+                            <p className="my-3">
+                                Click the button below to confirm
+                            </p>
+                            <input type="button" className="btn todo-btn-dark shadow" value="Confirm" onClick={onConfirmationCode}/>
+                            {/* <button className="btn todo-btn-dark shadow">Confirm</button> */}
+                            {/* <a class="btn todo-btn-dark shadow" href="http://localhost:3000/dashboard/:idUser" role="button">Coninue Log In</a> */}
+                        </div>
+                    </div>
+                :
+                    null
+            }
+
+            
 
             {
-                // dataState.error === true ?
-                //     <div className="col-12 d-flex justify-content-center">
-                //         <div className="col-6 text-center todo-bg-primary todo-border-dark todo-border-rad5 shadow py-3">
-                //             <h1>
-                //                 Error
-                //             </h1>
-                //             <img src={errorPict} className="my-3" style={{width:"auto", height:"210px"}} alt="congratsPict"></img>
-                //             <h5>
-                //                {dataState.message}
-                //             </h5>
+                dataState.error === false ?
+                    <div className="col-12 d-flex justify-content-center">
+                        <div className="col-6 text-center todo-bg-primary todo-border-dark todo-border-rad5 shadow py-3">
+                            <h1>
+                                Congratulation !
+                            </h1>
+                            <img src={congratsPict} className="my-3" style={{width:"auto", height:"210px"}} alt="congratsPict"></img>
+                            <h5>
+                                Your Account is now active.
+                            </h5>
+                            <p>
+                                Click the button below to log in
+                            </p>
+                            <button type="button" className="btn todo-btn-dark shadow" onClick={getLoginPage} >Continue Log In</button>
+                            {/* <a class="btn todo-btn-dark shadow" href="http://localhost:3000/dashboard/:idUser" role="button">Coninue Log In</a> */}
+                        </div>
+                    </div>
+                :
+                    null
+                    
+            }
+
+            {
+                dataState.error === true ?
+                    <div className="col-12 d-flex justify-content-center">
+                        <div className="col-6 text-center todo-bg-primary todo-border-dark todo-border-rad5 shadow py-3">
+                            <h1>
+                                Error
+                            </h1>
+                            <img src={errorPict} className="my-3" style={{width:"auto", height:"210px"}} alt="congratsPict"></img>
+                            <h5>
+                            {dataState.message}
+                            </h5>
                             
-                //         </div>
-                //     </div>
-                // :
-                //     <div className="col-12 d-flex justify-content-center">
-                //         <div className="col-6 text-center todo-bg-primary todo-border-dark todo-border-rad5 shadow py-3">
-                //             <h1>
-                //                 Congratulation !
-                //             </h1>
-                //             <img src={congratsPict} className="my-3" style={{width:"auto", height:"210px"}} alt="congratsPict"></img>
-                //             <h5>
-                //                 Your Account is now active.
-                //             </h5>
-                //             <p>
-                //                 Click the button below to log in
-                //             </p>
-                //             <button className="btn todo-btn-dark shadow">Continue Log In</button>
-                //             {/* <a class="btn todo-btn-dark shadow" href="http://localhost:3000/dashboard/:idUser" role="button">Coninue Log In</a> */}
-                //         </div>
-                //     </div>
+                        </div>
+                    </div>
+                :
+                    null
             }
             
         </div>

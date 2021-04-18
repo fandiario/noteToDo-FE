@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 // Redux
 import {connect} from "react-redux"
 import {getDataUser} from "../Redux/Actions/UserActions"
-import {getDataTask, updateTaskDone, deleteTask} from "../Redux/Actions/TodoActions"
+import {getDataTask, updateTaskDone, deleteTask, getDataPerTask, updateTask} from "../Redux/Actions/TodoActions"
+
+// Modals
+import { Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 
 // Add New Task
 import CreateTaskModal from "../Components/CreateTaskModal"
@@ -17,9 +20,9 @@ import swal from "sweetalert"
 
 // FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faEdit, faTrash, faBan } from '@fortawesome/free-solid-svg-icons'
 
-const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, todo}) => {
+const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, getDataPerTask,updateTask, user, todo}) => {
 
     useEffect (() => {
         onGetDataUser ()
@@ -27,8 +30,16 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
     }, [])
 
     // const [showAlert, setshowAlert] = useState(false)
-
     // const [dataUser, setDataUser] = useState (null)
+    const [showModal, setShowModal] = useState (false)
+    const [idTask, setIdTask] = useState (null)
+    const [dataState, setDataState] = useState ({
+        error: null
+    })
+
+    const editTitle = useRef (null)
+    const editDesc = useRef (null)
+    const editDate = useRef (null)
 
     const onGetDataUser = () => {
         let token = localStorage.getItem ("token")
@@ -40,6 +51,7 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
         let data = {token}
 
         getDataTask (data)
+        // setShowModal(false)
     }
 
     const onLogOut = () => {
@@ -80,6 +92,32 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
         onGetDataTask ()
     }
 
+    const onUpdateTask = (id) => {
+        setShowModal(true)
+        setIdTask (id)
+
+        getDataPerTask(id)
+        // console.log (todo.dataPerTask.date)
+    }
+
+    const submitUpdateTask = () => {
+        let dataToSend = {
+            title: editTitle.current.value,
+            description: editDesc.current.value,
+            date: editDate.current.value,
+            id: idTask
+        }
+
+        if (!dataToSend.title || !dataToSend.description || !dataToSend.date) throw setDataState ({error: "Empty data field detected"})
+
+        updateTask(dataToSend)
+        setShowModal (false)
+
+        onGetDataTask ()
+
+
+    }
+
     if (user.dataUser === null || todo.data === null) {
         return (
             <div>
@@ -113,8 +151,9 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
                 </h5>
             </div>
 
-            {/* Sidebar */}
+            
             <div className="row my-5">
+                {/* Sidebar */}
                 <div className="col-2 d-flex justify-content-center align-content-center" style={{height: "480px"}}>
                     <div className="col-12 ml-3 todo-bg-primary todo-colour-dark todo-border-dark todo-border-rad5 shadow">
                         <div>
@@ -169,6 +208,19 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
                             }
                         </div>
 
+                        <div className="my-3">
+                            {
+                                dataState.error ?
+                                    <div className="col-12 alert todo-bg-primary todo-colour-dark todo-fs-bold todo-border-dark todo-border-rad5" role="alert">
+                                        <div className="text-center">
+                                            {dataState.error}
+                                        </div>
+                                    </div>
+                                :
+                                    null    
+                            }
+                        </div>
+
                         {
                             todo.data.length === 0 ?
 
@@ -210,15 +262,24 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
                                                                                 }
                                                                             </div>
                                                                            
+                                                                           {
+                                                                               element.status === 0 ?
 
-                                                                            <div className="mr-3 mt-1">
-                                                                                <button className="btn todo-btn-primary todo-border-dark todo-border-rad5 mr-2">
-                                                                                    <FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>
-                                                                                </button>
-                                                                                <button className="btn todo-btn-dark todo-border-dark todo-border-rad5" onClick={() => onDeleteTask(element.id)}>
-                                                                                    <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
-                                                                                </button>
-                                                                            </div>
+                                                                                    <div className="mr-3 mt-1">
+                                                                                        <button className="btn todo-btn-primary todo-border-dark todo-border-rad5 mr-2" onClick={() => onUpdateTask(element.id)}>
+                                                                                            <FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>
+                                                                                        </button>
+                                                                                        <button className="btn todo-btn-dark todo-border-dark todo-border-rad5" onClick={() => onDeleteTask(element.id)}>
+                                                                                            <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                :
+                                                                                    null
+
+                                                                           }
+
+                                                                            
+
                                                                         </div>
 
                                                                         
@@ -258,12 +319,54 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, user, 
                                 </div>
                         }
 
-                        
-
                     </div>
 
                 </div>
 
+                {/* Modal Update */}
+
+                {
+                    todo.dataPerTask ?
+                        <Modal toggle={() => setShowModal(false)} isOpen={showModal} className="todo-border-dark todo-border-rad5 shadow">
+                            <ModalHeader className="todo-bg-dark todo-colour-light todo-border-dark todo-border-rad5">
+                                Edit Task
+                            </ModalHeader>
+
+                            <ModalBody className="todo-bg-primary todo-colour-dark todo-border-dark todo-border-rad5">
+                                <form>
+                                    <div className="form-group">
+                                        <label htmlFor="editTitle" className="todo-fs-bold">Title</label>
+                                        <input type="text" className="form-control" ref={editTitle} defaultValue={todo.dataPerTask.title}/>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="editDesc" className="todo-fs-bold">Description</label>
+                                        <input type="text" className="form-control" ref={editDesc} defaultValue={todo.dataPerTask.description}/>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="editDate" className="todo-fs-bold">Date</label>
+                                        <input type="datetime-local" className="form-control" ref={editDate} defaultValue={todo.dataPerTask.date}/>
+                                    </div>
+                                </form>
+                            </ModalBody>
+
+                            <ModalFooter className="todo-bg-primary todo-colour-light todo-border-dark todo-border-rad5">
+                                {/* <button type="button" className="btn todo-btn-danger todo-border-rad5 shadow" onClick={() => onGetDataTask()}>
+                                    <FontAwesomeIcon icon={faBan} className="mx-1"></FontAwesomeIcon>
+                                    Cancel
+                                </button> */}
+
+                                <button type="button" className="btn todo-btn-dark todo-border-dark todo-border-rad5 shadow" onClick={() => submitUpdateTask()}>
+                                    <FontAwesomeIcon icon={faEdit} className="mx-1"></FontAwesomeIcon>
+                                    Edit Task
+                                </button>
+                            </ModalFooter>
+                        </Modal>
+                    :
+                        null
+                }
+                
             </div>
         </div>
     )
@@ -277,7 +380,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    getDataUser, getDataTask, updateTaskDone, deleteTask
+    getDataUser, getDataTask, updateTaskDone, deleteTask, getDataPerTask, updateTask
 }
 
 export default connect (mapStateToProps, mapDispatchToProps) (Dashboard)

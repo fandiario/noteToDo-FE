@@ -131,3 +131,61 @@ export const deleteTask = (id) => {
         })
     }
 }
+
+export const getDataPerTask = (id) => {
+    return (dispatch) => {
+        axios.post (linkAPITodo + "/get-data-per-task", {id})
+
+        .then ((res) => {
+            // console.log (res.data.error)
+            // console.log (res.data.message)
+            // console.log (res.data.data)
+
+            if (res.data.error === false) {
+                dispatch({
+                    type: "TODO_GET_DATA_PER_TASK_SUCCESS",
+                    payload: res.data.data
+                })
+
+            } else {
+                dispatch({
+                    type: "TODO_GET_DATA_PER_TASK_FAIL",
+                    payload: res.data.message
+                })
+            }
+            
+        })
+
+        .catch ((err) => {
+            console.log (err)
+
+            dispatch ({
+                type: "TODO_GET_DATA_PER_TASK_FAIL",
+                payload: err.response.data.message
+            })
+        })
+    }
+}
+
+export const updateTask = (data) => {
+    return (dispatch) => {
+        // console.log (data)
+        axios.patch (linkAPITodo + "/update-task", data)
+
+        .then ((res) => {
+            dispatch ({
+                type: "TODO_UPDATE_TASK_SUCCESS",
+                payload: res.data.data
+            })
+        })
+
+        .catch ((err) => {
+            console.log (err)
+
+            dispatch ({
+                type: "TODO_UPDATE_TASK_FAIL",
+                payload: err.response.data.message
+            })
+        })
+    }
+}

@@ -24,8 +24,8 @@ import {faGoogle, faFacebook} from"@fortawesome/free-brands-svg-icons"
 import swal from "sweetalert"
 
 // Image
-import congratsPict from "../Supports/Assets/undraw_well_done_i2wr.svg"
-import errorPict from "../Supports/Assets/undraw_cancel_u1it.svg"
+// import congratsPict from "../Supports/Assets/undraw_well_done_i2wr.svg"
+// import errorPict from "../Supports/Assets/undraw_cancel_u1it.svg"
 
 const Login = ({onUserRegister, onUserLogin, user}) => {
     const [showModal, setShowModal] = useState (false)
@@ -66,8 +66,9 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
 
         onUserRegister (dataToSend)
         setDataState ({registered: true})
-        // setShowModal (false)
-        // window.location = "/confirm-registration"
+
+        setShowModal (false)
+        // window.location = "/"
 
     }
 
@@ -254,14 +255,15 @@ const Login = ({onUserRegister, onUserLogin, user}) => {
 
                     }
 
-                    {
+                    {/* {
                         dataState.registered === true ?
                             <div className="col-12 d-flex flex-column align-items-center my-1">
                                 "User registration is success. Please check your email in 1 x 24 hours"
                             </div>
                         :
                             null
-                    }
+                    } */}
+
                 </ModalFooter>
 
             </Modal>
