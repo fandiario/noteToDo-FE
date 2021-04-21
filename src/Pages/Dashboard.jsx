@@ -95,7 +95,7 @@ const Dashboard = ({getDataUser, updateTaskDone, deleteTask, getDataTask, getDat
     const onUpdateTask = (id) => {
         setShowModal(true)
         setIdTask (id)
-
+        onGetDataTask ()
         getDataPerTask(id)
         // console.log (todo.dataPerTask.date)
     }

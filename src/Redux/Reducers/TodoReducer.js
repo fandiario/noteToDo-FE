@@ -12,7 +12,7 @@ const todoReducer = (state = initialstate, action) => {
             return {...state, loading: true}
 
         case "TODO_SUCCESS":
-            return {...state, data: action.payload, loading: false}
+            return {...state, data: action.payload, loading: false, dataPerTask: null}
         
         case "TODO_FAIL":
             return {...state, message: action.payload, loading: false}
